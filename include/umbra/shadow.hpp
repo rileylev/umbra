@@ -123,23 +123,4 @@ using ReadIn = std::conditional_t<
  * if we end up taking a copy.
  */
 #define UMBRA_READIN(...) UMBRA_FOR_VARARGS_(UMBRA_READIN1_, __VA_ARGS__)
-
-int const x = 0;
-
-int test() {
-  UMBRA_SHADOW(int x = 2) {
-    ++x;
-    auto y = x;
-    UMBRA_POISON(x) {
-      ++x;
-      UMBRA_FREEZE(y) { return ++y; }
-    }
-  }
-}
-
-template<class X, class Y>
-auto test(X const& a, Y const& b) {
-  UMBRA_READIN(a, b) { return a + b; }
-}
-
 #endif
