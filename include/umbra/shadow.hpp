@@ -9,7 +9,6 @@
 #include <initializer_list>
 
 #define UMBRA_CALL_(_, mac, elem) mac(elem)
-#pragma GCC diagnostic error "-Wshadow"
 
 #define UMBRA_FOR_VARARGS_(mac, ...)                                      \
   BOOST_PP_SEQ_FOR_EACH(UMBRA_CALL_,                                      \
