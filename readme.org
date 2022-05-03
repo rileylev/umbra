@@ -1,7 +1,7 @@
 #+TITLE: Readme
 Macro utilities for shadowing with lexical scope
 
-Accidental shadowing can cause trouble, especially because of how it can interact with other C++ features. But intentional shadowing can be useful, especially because it can block or modify access to variables. For example, I often want to express a variable "becomes" const---nothing beyond this scope is allowed to modify it.
+Accidental shadowing can cause trouble, especially because of how it interacts with other C++ features. But intentional shadowing is useful; it can block or modify access to variables. I often want to express a variable "becomes" const---nothing beyond this point is allowed to modify it. For example, you can use shadowing to assert a loop's index variable is never modified in its body:
 
 #+BEGIN_SRC cpp
     for(int i = 0; i < len, ++i)
