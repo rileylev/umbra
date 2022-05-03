@@ -108,7 +108,7 @@ using ReadIn = std::conditional_t<
  * references befuddle the optimizer? Can we automate this decision without
  * interfering with template type deduction?
  *
- * Using UMBRA_READIN, we can take a variable by * const& and rebind it to
+ * Using UMBRA_READIN, we can take a variable by const& and rebind it to
  * a ReadIn, copying if that's cheap.
  *
  * template<class T>
