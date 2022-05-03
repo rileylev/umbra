@@ -1,0 +1,8 @@
+# -*- conf-desktop -*-
+[requires]
+catch2/2.13.9
+boost/1.78.0
+
+[generators]
+cmake_find_package
+cmake_paths
