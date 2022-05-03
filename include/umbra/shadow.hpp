@@ -17,11 +17,11 @@
                         BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))
 
 #if defined(__GNUC__)
-#  define UMBRA_PRAGMA_IGNORE_SHADOW_                                            \
+#  define UMBRA_PRAGMA_IGNORE_SHADOW_                                     \
     _Pragma("GCC diagnostic ignored \"-Wshadow\"")
 #elif defined(_MSC_VER)
 #  define UMBRA_MSVC_DISABLE_WARNING_(num) __pragma(warning(disable : num))
-#  define UMBRA_PRAGMA_IGNORE_SHADOW_                                            \
+#  define UMBRA_PRAGMA_IGNORE_SHADOW_                                     \
     /* declaration of 'identifier' hides previous local declaration */    \
     UMBRA_MSVC_DISABLE_WARNING_(4456)                                     \
     /* declaration of 'identifier' hides function parameter*/             \
@@ -35,7 +35,7 @@
 #endif
 
 #define UMBRA_IGNORE_SHADOW(...)                                          \
-  HEDLEY_DIAGNOSTIC_PUSH UMBRA_PRAGMA_IGNORE_SHADOW_ __VA_ARGS__                 \
+  HEDLEY_DIAGNOSTIC_PUSH UMBRA_PRAGMA_IGNORE_SHADOW_ __VA_ARGS__          \
       HEDLEY_DIAGNOSTIC_POP
 
 #define UMBRA_GENSYM_(sym) HEDLEY_CONCAT3(umbra_gensym, __COUNTER__, sym)
@@ -92,14 +92,28 @@
 #define UMBRA_FREEZE(...) UMBRA_FOR_VARARGS_(UMBRA_FREEZE1_, __VA_ARGS__)
 
 #include <type_traits>
+namespace umbra {
+/**
+ * Our fallback implementation for ReadIn
+ */
 template<class T>
 using ReadIn = std::conditional_t<
     std::is_trivially_copyable_v<T> && sizeof(T) <= 2 * sizeof(void*),
     T const,
     T const&>;
-#define UMBRA_READIN1_x_(tmp, name)                                       \
-  LET1(auto const& tmp = name)                                            \
-  UMBRA_SHADOW(ReadIn<std::remove_reference_t<decltype(tmp)>> name = tmp)
+} // namespace umbra
+#ifndef UMBRA_READIN_TEMPLATE
+/**
+ * Customization point! A template that decides if we pass by
+ * const & or by value
+ */
+#  define UMBRA_READIN_TEMPLATE ::umbra::ReadIn
+#endif
+#define UMBRA_READIN1_x_(tmp, name)                                        \
+  LET1(auto const& tmp = name)                                             \
+  UMBRA_SHADOW(                                                            \
+      UMBRA_READIN_TEMPLATE<std::remove_reference_t<decltype(tmp)>> name = \
+          tmp)
 #define UMBRA_READIN1_(name) UMBRA_READIN1_x_(UMBRA_GENSYM(tmp), name)
 /**
  * Rebind `name` to a ReadIn within the new scope
