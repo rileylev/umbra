@@ -78,7 +78,7 @@
 #define UMBRA_POISON(...) UMBRA_FOR_VARARGS_(UMBRA_POISON1, __VA_ARGS__)
 
 #define UMBRA_FREEZE1_x_(tmp, name)                                       \
-  LET1(auto const& tmp = name) UMBRA_SHADOW(auto const& name = tmp)
+  UMBRA_LET1(auto const& tmp = name) UMBRA_SHADOW(auto const& name = tmp)
 #define UMBRA_FREEZE1_(name) UMBRA_FREEZE1_x_(UMBRA_GENSYM(tmp), name)
 /**
  * Freezes a variable into a const within the new scope:
@@ -109,7 +109,7 @@ using ReadIn = std::conditional_t<
 #  define UMBRA_READIN_TEMPLATE ::umbra::ReadIn
 #endif
 #define UMBRA_READIN1_x_(tmp, name)                                        \
-  LET1(auto const& tmp = name)                                             \
+  UMBRA_LET1(auto const& tmp = name)                                             \
   UMBRA_SHADOW(                                                            \
       UMBRA_READIN_TEMPLATE<std::remove_reference_t<decltype(tmp)>> name = \
           tmp)
