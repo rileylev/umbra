@@ -5,7 +5,7 @@ Accidental shadowing can cause trouble, especially because of how it interacts w
 
 #+BEGIN_SRC cpp
     for(int i = 0; i < len, ++i)
-      FREEZE(i) {
+      UMBRA_FREEZE(i) {
         if(pred(i))
           arr[i]++;
       }
@@ -19,7 +19,7 @@ This library provides 4 macros:
 
 #+BEGIN_SRC cpp
     int const x = 3;
-    SHADOW(int x = 2){
+    UMBRA_SHADOW(int x = 2){
       ++x;              // ok!
     }
 #+END_SRC
@@ -29,7 +29,7 @@ This library provides 4 macros:
 #+BEGIN_SRC cpp
     int x = 3;
     int y = 2;
-    POISON(x,y){
+    UMBRA_POISON(x,y){
       auto z = x + y; // warning/error!
     }
 #+END_SRC
@@ -39,7 +39,7 @@ This library provides 4 macros:
 #+BEGIN_SRC cpp
     int x = 2;
     int y = 3;
-    FREEZE(x,y){
+    UMBRA_FREEZE(x,y){
       ++x, ++y;   // error
     }
 #+END_SRC
