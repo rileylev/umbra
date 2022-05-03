@@ -1,2 +1,44 @@
 #+TITLE: Readme
 Macro utilities for shadowing with lexical scope
+
+Accidental shadowing can cause trouble, especially because of how it can interact with other C++ features. But intentional shadowing can be useful, especially because it can block or modify access to variables. For example, I often want to express a variable "becomes" const---nothing beyond this scope is allowed to modify it.
+
+    for(int i = 0; i < len, ++i)
+      FREEZE(i) {
+        if(pred(i))
+          arr[i]++;
+      }
+
+
+This library provides 4 macros:
+
+~UMBRA_SHADOW~ which disables shadowing warnings for one definition and introduces a scope:
+
+    int const x = 3;
+    SHADOW(int x = 2){
+      ++x;              // ok!
+    }
+
+~UMBRA_POISON~, which bans variables from use in the new scope:
+    int x = 3;
+    int y = 2;
+    POISON(x,y){
+      auto z = x + y; // warning/error!
+    }
+
+~UMBRA_FREEZE~, which makes variables const within the new scope:
+
+    int x = 2;
+    int y = 3;
+    FREEZE(x,y){
+      ++x, ++y;   // error
+    }
+
+and ~UMBRA_READIN~, which will rebind a variable to a copy if the type is easy to copy:
+
+    template<class T>
+    auto example(T const& x){
+      UMBRA_READIN(x){    // we want a read only variable
+                          // but not necessarily a reference
+      }
+    }
