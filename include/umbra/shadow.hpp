@@ -47,7 +47,7 @@
  * }
  */
 #define UMBRA_LET1(...)                                                   \
-  for(__VA_ARGS__; [[maybe_unused]] auto UMBRA_GENSYM(_) : {0})
+  for(__VA_ARGS__; [[maybe_unused]] auto UMBRA_GENSYM_(_) : {0})
 
 /**
  * Disable warnings for shadowing for one variable definition introduced in
@@ -79,7 +79,7 @@
 
 #define UMBRA_FREEZE1_x_(tmp, name)                                       \
   UMBRA_LET1(auto const& tmp = name) UMBRA_SHADOW(auto const& name = tmp)
-#define UMBRA_FREEZE1_(name) UMBRA_FREEZE1_x_(UMBRA_GENSYM(tmp), name)
+#define UMBRA_FREEZE1_(name) UMBRA_FREEZE1_x_(UMBRA_GENSYM_(tmp), name)
 /**
  * Freezes a variable into a const within the new scope:
  *
@@ -113,7 +113,7 @@ using ReadIn = std::conditional_t<
   UMBRA_SHADOW(                                                            \
       UMBRA_READIN_TEMPLATE<std::remove_reference_t<decltype(tmp)>> name = \
           tmp)
-#define UMBRA_READIN1_(name) UMBRA_READIN1_x_(UMBRA_GENSYM(tmp), name)
+#define UMBRA_READIN1_(name) UMBRA_READIN1_x_(UMBRA_GENSYM_(tmp), name)
 /**
  * Rebind `name` to a ReadIn within the new scope
  *
