@@ -47,7 +47,8 @@
  * }
  */
 #define UMBRA_LET1(...)                                                   \
-  for(__VA_ARGS__; [[maybe_unused]] auto UMBRA_GENSYM_(_) : {0})
+  if(__VA_ARGS__; true)
+//  TODO: for interferes with break, if interfores with else
 
 /**
  * Disable warnings for shadowing for one variable definition introduced in
