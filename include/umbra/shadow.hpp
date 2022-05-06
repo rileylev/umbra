@@ -8,6 +8,8 @@
 #include <boost/preprocessor/variadic/to_seq.hpp>
 #include <initializer_list>
 
+#define UMBRA_COMMENT(...)
+
 #define UMBRA_CALL_(_, mac, elem) mac(elem)
 
 #define UMBRA_FOR_VARARGS_(mac, ...)                                      \
@@ -46,8 +48,7 @@
  *   ++x;
  * }
  */
-#define UMBRA_LET1(...)                                                   \
-  if(__VA_ARGS__; true)
+#define UMBRA_LET1(...) if(__VA_ARGS__; true)
 //  TODO: for interferes with break, if interfores with else
 
 /**
@@ -67,7 +68,7 @@
 #else
 #  define UMBRA_POISON_ATTR_ [[deprecated("poisoned"), maybe_unused]]
 #endif
-#define UMBRA_POISON1 UMBRA_SHADOW(UMBRA_POISON_ATTR_ char name)
+#define UMBRA_POISON1_ UMBRA_SHADOW(UMBRA_POISON_ATTR_ char name)
 /**
  * Poisons a variable within the introduced scope
  *
@@ -76,7 +77,7 @@
  *   int y = x; // warning/error!
  * }
  */
-#define UMBRA_POISON(...) UMBRA_FOR_VARARGS_(UMBRA_POISON1, __VA_ARGS__)
+#define UMBRA_POISON(...) UMBRA_FOR_VARARGS_(UMBRA_POISON1_, __VA_ARGS__)
 
 #define UMBRA_FREEZE1_x_(tmp, name)                                       \
   UMBRA_LET1(auto const& tmp = name) UMBRA_SHADOW(auto const& name = tmp)
@@ -110,7 +111,7 @@ using ReadIn = std::conditional_t<
 #  define UMBRA_READIN_TEMPLATE ::umbra::ReadIn
 #endif
 #define UMBRA_READIN1_x_(tmp, name)                                        \
-  UMBRA_LET1(auto const& tmp = name)                                             \
+  UMBRA_LET1(auto const& tmp = name)                                       \
   UMBRA_SHADOW(                                                            \
       UMBRA_READIN_TEMPLATE<std::remove_reference_t<decltype(tmp)>> name = \
           tmp)
