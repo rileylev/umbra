@@ -9,6 +9,8 @@ set(CMAKE_WARN_DEPRICATED ON)
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+
 enable_testing()
 
 find_program(CCACHE ccache)
