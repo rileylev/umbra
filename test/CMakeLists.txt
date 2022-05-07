@@ -1,8 +1,8 @@
-# Bare-bones test definition.
-# It only define the logical connection between components.
+# Bare-bones test definition. It only define the logical connection between
+# components.
 #
-# This file does not assume any kind of package manager.
-# It assumes dependencies will be found by find_package.
+# This file does not assume any kind of package manager. It assumes dependencies
+# will be found by find_package.
 project(umbra_test)
 
 include(early_hook.cmake)
@@ -12,20 +12,23 @@ find_package(Catch2 REQUIRED)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-target_link_libraries(tester
-  PRIVATE
-  umbra::umbra
-  Catch2::Catch2)
+target_link_libraries(tester PRIVATE umbra::umbra Catch2::Catch2)
 
 include(CTest)
 include(Catch)
 catch_discover_tests(tester)
 
+# How to test that compilation fails:
+# https://cmake.org/pipermail/cmake/2017-September/066219.html
+# pfultz2 at yahoo.com
+# Wed Sep 6 23:39:37 EDT 2017
 function(test_that_compile_errors name file regex)
   add_library(${name} STATIC EXCLUDE_FROM_ALL ${file})
   target_link_libraries(${name} PRIVATE umbra::umbra)
-  add_test(NAME ${name}
-    COMMAND ${CMAKE_COMMAND} --build . --target ${name} --config $<CONFIGURATION>
+  add_test(
+    NAME ${name}
+    COMMAND ${CMAKE_COMMAND} --build . --target ${name} --config
+            $<CONFIGURATION>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   set_tests_properties(${name} PROPERTIES PASS_REGULAR_EXPRESSION ${regex})
 endfunction()
