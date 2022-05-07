@@ -36,13 +36,13 @@ NamespaceIndentation: Inner
 
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 Cpp11BracedListStyle: true
-FixNamespaceComments: true
+FixNamespaceComments: false
 IndentCaseLabels: true
 IndentGotoLabels: true
 IndentPPDirectives: AfterHash
 IndentWidth: 2
 IndentWrappedFunctionNames: true
-SortIncludes: false
+SortIncludes: true
 ReflowComments: true
 Standard: Latest
 UseTab: Never
@@ -50,8 +50,8 @@ SpaceAfterTemplateKeyword: false
 AlwaysBreakTemplateDeclarations: true
 SpaceBeforeParens: Never
 
-
-StatementMacros: ['ARROW', 'RET', 'NOEX']
+ForEachMacros: ['UNLESS', 'UNTIL', 'UMBRA_SHADOW', 'UMBRA_POISON', 'UMBRA_FREEZE']
+StatementMacros: ['ARROW', 'RET', 'NOEX', 'NOEX_DECL', 'NOEXDECL', 'DECLRET', 'ASSERT_RET', 'ASSERT_NOEX', 'ASSERT_NOEXDECL']
 
 PenaltyExcessCharacter: 30
 PenaltyReturnTypeOnItsOwnLine: 3

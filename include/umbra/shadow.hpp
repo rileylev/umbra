@@ -62,13 +62,14 @@
  */
 #define UMBRA_SHADOW(...) UMBRA_IGNORE_SHADOW(UMBRA_LET1(__VA_ARGS__))
 
+#define UMBRA_POISON_MSG_ "poisoned by UMBRA_POISON"
 #if defined(_MSC_VER)
 // I'm not sure why MSVC disagrees where annotations go
-#  define UMBRA_POISON_ATTR_ __declspec(deprecated("poisoned"))
+#  define UMBRA_POISON_ATTR_ __declspec(deprecated(UMBRA_POISON_MSG_))
 #else
-#  define UMBRA_POISON_ATTR_ [[deprecated("poisoned"), maybe_unused]]
+#  define UMBRA_POISON_ATTR_ [[deprecated(UMBRA_POISON_MSG_), maybe_unused]]
 #endif
-#define UMBRA_POISON1_ UMBRA_SHADOW(UMBRA_POISON_ATTR_ char name)
+#define UMBRA_POISON1_(name) UMBRA_SHADOW(UMBRA_POISON_ATTR_ char name)
 /**
  * Poisons a variable within the introduced scope
  *

@@ -20,3 +20,10 @@ target_link_libraries(tester
 include(CTest)
 include(Catch)
 catch_discover_tests(tester)
+
+add_library(poison STATIC EXCLUDE_FROM_ALL poison_test.cpp)
+target_link_libraries(poison PRIVATE umbra::umbra)
+add_test(NAME poison
+  COMMAND ${CMAKE_COMMAND} --build . --target poison --config $<CONFIGURATION>
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set_tests_properties(poison PROPERTIES PASS_REGULAR_EXPRESSION "poisoned by UMBRA_POISON")
