@@ -25,7 +25,7 @@ endfunction()
 
 test_that_compile_errors(shadow_warning_on
   "Ensure that shadow warnings are enabled"
-  shadow_warning_on.cpp "shadows")
+  shadow_warning_on.cpp "(shadows|hides)")
 
 add_executable(tester test.cpp)
 find_package(Catch2 REQUIRED)
