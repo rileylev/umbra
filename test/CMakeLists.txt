@@ -21,9 +21,14 @@ include(CTest)
 include(Catch)
 catch_discover_tests(tester)
 
-add_library(poison STATIC EXCLUDE_FROM_ALL poison_test.cpp)
-target_link_libraries(poison PRIVATE umbra::umbra)
-add_test(NAME poison
-  COMMAND ${CMAKE_COMMAND} --build . --target poison --config $<CONFIGURATION>
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-set_tests_properties(poison PROPERTIES PASS_REGULAR_EXPRESSION "poisoned by UMBRA_POISON")
+function(test_that_compile_errors name file regex)
+  add_library(${name} STATIC EXCLUDE_FROM_ALL ${file})
+  target_link_libraries(${name} PRIVATE umbra::umbra)
+  add_test(NAME ${name}
+    COMMAND ${CMAKE_COMMAND} --build . --target ${name} --config $<CONFIGURATION>
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  set_tests_properties(${name} PROPERTIES PASS_REGULAR_EXPRESSION ${regex})
+endfunction()
+
+test_that_compile_errors(shadow_warning_on shadow_warning_on.cpp "shadows")
+test_that_compile_errors(poison poison_test.cpp "poisoned by UMBRA_POISON")
