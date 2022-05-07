@@ -7,6 +7,26 @@ project(umbra_test)
 
 include(early_hook.cmake)
 
+
+# How to test that compilation fails:
+# https://cmake.org/pipermail/cmake/2017-September/066219.html
+# pfultz2 at yahoo.com
+# Wed Sep 6 23:39:37 EDT 2017
+function(test_that_compile_errors name longname file regex)
+  add_library(${name} STATIC EXCLUDE_FROM_ALL ${file})
+  target_link_libraries(${name} PRIVATE umbra::umbra)
+  add_test(
+    NAME ${longname}
+    COMMAND ${CMAKE_COMMAND} --build . --target ${name} --config
+            $<CONFIGURATION>
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  set_tests_properties(${longname} PROPERTIES PASS_REGULAR_EXPRESSION ${regex})
+endfunction()
+
+test_that_compile_errors(shadow_warning_on
+  "Ensure that shadow warnings are enabled"
+  shadow_warning_on.cpp "shadows")
+
 add_executable(tester test.cpp)
 find_package(Catch2 REQUIRED)
 
@@ -18,20 +38,7 @@ include(CTest)
 include(Catch)
 catch_discover_tests(tester)
 
-# How to test that compilation fails:
-# https://cmake.org/pipermail/cmake/2017-September/066219.html
-# pfultz2 at yahoo.com
-# Wed Sep 6 23:39:37 EDT 2017
-function(test_that_compile_errors name file regex)
-  add_library(${name} STATIC EXCLUDE_FROM_ALL ${file})
-  target_link_libraries(${name} PRIVATE umbra::umbra)
-  add_test(
-    NAME ${name}
-    COMMAND ${CMAKE_COMMAND} --build . --target ${name} --config
-            $<CONFIGURATION>
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-  set_tests_properties(${name} PROPERTIES PASS_REGULAR_EXPRESSION ${regex})
-endfunction()
 
-test_that_compile_errors(shadow_warning_on shadow_warning_on.cpp "shadows")
-test_that_compile_errors(poison poison_test.cpp "poisoned by UMBRA_POISON")
+test_that_compile_errors(poison
+  "Accessing a poisoned variable causes a warning"
+  poison_test.cpp "poisoned by UMBRA_POISON")
