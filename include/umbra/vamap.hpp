@@ -1,18 +1,19 @@
 #ifndef INCLUDE_GUARD_umbra_vamap_hpp
 #define INCLUDE_GUARD_umbra_vamap_hpp
 
-#define UMBRA_VAMAP_(f,...) UMBRA_VAMAP_0_(f,__VA_ARGS__)
+#define UMBRA_VAMAP_(f, ...) UMBRA_VAMAP_00_(f, __VA_ARGS__)
 
-#define UMBRA_VAMAP_0_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_1_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_1_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_2_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_2_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_3_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_3_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_4_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_4_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_5_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_5_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_6_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_6_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_7_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_7_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_8_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_8_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_9_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_9_(f, x, ...)   f(x) __VA_OPT__(UMBRA_VAMAP_10_(f, __VA_ARGS__))
+// clang-format off
+#define UMBRA_VAMAP_00_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_01_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_01_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_02_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_02_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_03_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_03_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_04_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_04_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_05_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_05_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_06_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_06_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_07_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_07_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_08_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_08_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_09_(f, __VA_ARGS__))
+#define UMBRA_VAMAP_09_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_10_(f, __VA_ARGS__))
 #define UMBRA_VAMAP_10_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_11_(f, __VA_ARGS__))
 #define UMBRA_VAMAP_11_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_12_(f, __VA_ARGS__))
 #define UMBRA_VAMAP_12_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_13_(f, __VA_ARGS__))
@@ -103,7 +104,8 @@
 #define UMBRA_VAMAP_97_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_98_(f, __VA_ARGS__))
 #define UMBRA_VAMAP_98_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_99_(f, __VA_ARGS__))
 #define UMBRA_VAMAP_99_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_100_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_100_(f, x, ...) f(x) __VA_OPT__(UMBRA_VAMAP_101_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_101_(f, x, ...) static_assert(false, "Too many args for UMBRA");
+// clang-format on
+#define UMBRA_VAMAP_100_(...)                                             \
+  __VA_OPT__(static_assert(false, "Too many args for UMBRA");)
 
 #endif
