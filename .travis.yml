@@ -19,7 +19,7 @@ script:
   - pip install conan
   - mkdir build
   - cd build
-  - conan install .. --build=boost
+  - conan install ..
   - cmake ../
   - cmake --build . -- -j
   - ctest -j
