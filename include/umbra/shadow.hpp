@@ -2,18 +2,9 @@
 #define INCLUDE_GUARD_umbra_shadow_hpp
 
 #include "hedley.h"
+#include "vamap.hpp"
+
 // https://www.fluentcpp.com/2019/08/30/how-to-disable-a-warning-in-cpp/
-
-#include <boost/preprocessor/seq/for_each.hpp>
-#include <boost/preprocessor/variadic/to_seq.hpp>
-
-#define UMBRA_CALL_(_, mac, elem) mac(elem)
-
-#define UMBRA_FOR_VARARGS_(mac, ...)                                      \
-  BOOST_PP_SEQ_FOR_EACH(UMBRA_CALL_,                                      \
-                        mac,                                              \
-                        BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))
-
 #if defined(__GNUC__)
 #  define UMBRA_PRAGMA_IGNORE_SHADOW_                                     \
     _Pragma("GCC diagnostic ignored \"-Wshadow\"")
@@ -76,7 +67,7 @@
  *   int y = x; // warning/error!
  * }
  */
-#define UMBRA_POISON(...) UMBRA_FOR_VARARGS_(UMBRA_POISON1_, __VA_ARGS__)
+#define UMBRA_POISON(...) UMBRA_VAMAP_(UMBRA_POISON1_, __VA_ARGS__)
 
 #define UMBRA_REBIND_(tmp, type, name, expr)                              \
   UMBRA_LET1(type tmp{expr})                                              \
@@ -99,7 +90,7 @@
  *     ++i; // error! i is const here
  *   }
  */
-#define UMBRA_FREEZE(...) UMBRA_FOR_VARARGS_(UMBRA_FREEZE1_, __VA_ARGS__)
+#define UMBRA_FREEZE(...) UMBRA_VAMAP_(UMBRA_FREEZE1_, __VA_ARGS__)
 
 #include <type_traits>
 namespace umbra {
@@ -146,5 +137,5 @@ using ReadIn = ReadIn_<std::decay_t<T>>;
  * The template function is inlinable, so the optimizer can (with luck) see
  * if we end up taking a copy.
  */
-#define UMBRA_READIN(...) UMBRA_FOR_VARARGS_(UMBRA_READIN1_, __VA_ARGS__)
+#define UMBRA_READIN(...) UMBRA_VAMAP_(UMBRA_READIN1_, __VA_ARGS__)
 #endif
