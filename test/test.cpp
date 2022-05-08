@@ -1,7 +1,5 @@
 #define CATCH_CONFIG_MAIN
 
-
-
 #include <umbra/shadow.hpp>
 
 #include <catch2/catch.hpp>
@@ -14,7 +12,7 @@ constexpr bool is_read_only = std::is_const_v<std::remove_reference_t<T>>;
 #define IS_READ_ONLY(x) is_read_only<decltype(x)>
 
 TEST_CASE("Shadow allows shadowing without warnings") {
-  [[maybe_unused]] constexpr  int x = 0;
+  [[maybe_unused]] constexpr int x = 0;
   UMBRA_SHADOW(constexpr char x = 'a') { STATIC_REQUIRE(x == 'a'); }
 }
 
@@ -31,11 +29,11 @@ TEST_CASE("Frozen variables are const ref") {
   }
 }
 
-TEST_CASE("READIN copies small+trivially copyable types"){
-    int x = 0;
-    int& y = x;
-    UMBRA_READIN(y){ //breaks the link
-        x=1;
-        REQUIRE(y!=x);
-    }
+TEST_CASE("READIN copies small+trivially copyable types") {
+  int  x = 0;
+  int& y = x;
+  UMBRA_READIN(y) { // breaks the link
+    x = 1;
+    REQUIRE(y != x);
+  }
 }
