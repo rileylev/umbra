@@ -50,7 +50,7 @@ SpaceAfterTemplateKeyword: false
 AlwaysBreakTemplateDeclarations: true
 SpaceBeforeParens: Never
 
-ForEachMacros: ['UNLESS', 'UNTIL', 'UMBRA_SHADOW', 'UMBRA_POISON', 'UMBRA_FREEZE']
+ForEachMacros: ['UNLESS', 'UNTIL', 'UMBRA_LET1', 'UMBRA_SHADOW', 'UMBRA_POISON', 'UMBRA_FREEZE']
 StatementMacros: ['ARROW', 'RET', 'NOEX', 'NOEX_DECL', 'NOEXDECL', 'DECLRET', 'ASSERT_RET', 'ASSERT_NOEX', 'ASSERT_NOEXDECL']
 
 PenaltyExcessCharacter: 30

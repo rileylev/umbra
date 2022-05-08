@@ -6,7 +6,6 @@
 
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/variadic/to_seq.hpp>
-#include <initializer_list>
 
 #define UMBRA_COMMENT(...)
 
@@ -67,7 +66,8 @@
 // I'm not sure why MSVC disagrees where annotations go
 #  define UMBRA_POISON_ATTR_ __declspec(deprecated(UMBRA_POISON_MSG_))
 #else
-#  define UMBRA_POISON_ATTR_ [[deprecated(UMBRA_POISON_MSG_), maybe_unused]]
+#  define UMBRA_POISON_ATTR_                                              \
+    [[deprecated(UMBRA_POISON_MSG_), maybe_unused]]
 #endif
 #define UMBRA_POISON1_(name) UMBRA_SHADOW(UMBRA_POISON_ATTR_ char name)
 /**
@@ -80,9 +80,19 @@
  */
 #define UMBRA_POISON(...) UMBRA_FOR_VARARGS_(UMBRA_POISON1_, __VA_ARGS__)
 
-#define UMBRA_FREEZE1_x_(tmp, name)                                       \
-  UMBRA_LET1(auto const& tmp = name) UMBRA_SHADOW(auto const& name = tmp)
-#define UMBRA_FREEZE1_(name) UMBRA_FREEZE1_x_(UMBRA_GENSYM_(tmp), name)
+#define UMBRA_REBIND_(tmp, type, name, expr)                              \
+  UMBRA_LET1(type tmp = expr)                                             \
+    UMBRA_SHADOW(auto& name = tmp)
+// I'm not sure what ^^^ should be. For now, just reference a tmp variable
+// which has the desired declaration
+/**
+ * Rebind `name` as a reference to a variable defined with type `type`
+ * initialized from `expr`
+ */
+#define UMBRA_REBIND(type, name, expr)                                    \
+  UMBRA_REBIND_(UMBRA_GENSYM_(tmp), type, name, expr)
+
+#define UMBRA_FREEZE1_(name) UMBRA_REBIND(auto const&, name, name)
 /**
  * Freezes a variable into a const within the new scope:
  *
@@ -99,10 +109,14 @@ namespace umbra {
  * Our fallback implementation for ReadIn
  */
 template<class T>
-using ReadIn = std::conditional_t<
+using ReadIn_ = std::conditional_t<
     std::is_trivially_copyable_v<T> && sizeof(T) <= 2 * sizeof(void*),
     T const,
     T const&>;
+
+template<class T>
+// TODO: does decay do too much?
+using ReadIn = ReadIn_<std::decay_t<T>>;
 } // namespace umbra
 #ifndef UMBRA_READIN_TEMPLATE
 /**
@@ -111,12 +125,8 @@ using ReadIn = std::conditional_t<
  */
 #  define UMBRA_READIN_TEMPLATE ::umbra::ReadIn
 #endif
-#define UMBRA_READIN1_x_(tmp, name)                                        \
-  UMBRA_LET1(auto const& tmp = name)                                       \
-  UMBRA_SHADOW(                                                            \
-      UMBRA_READIN_TEMPLATE<std::remove_reference_t<decltype(tmp)>> name = \
-          tmp)
-#define UMBRA_READIN1_(name) UMBRA_READIN1_x_(UMBRA_GENSYM_(tmp), name)
+#define UMBRA_READIN1_(name)                                              \
+  UMBRA_REBIND(UMBRA_READIN_TEMPLATE<decltype(name)>, name, name)
 /**
  * Rebind `name` to a ReadIn within the new scope
  *

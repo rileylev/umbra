@@ -1,5 +1,7 @@
 #define CATCH_CONFIG_MAIN
 
+
+
 #include <umbra/shadow.hpp>
 
 #include <catch2/catch.hpp>
@@ -27,4 +29,13 @@ TEST_CASE("Frozen variables are const ref") {
     STATIC_REQUIRE(IS_READ_ONLY(x));
     STATIC_REQUIRE(IS_READ_ONLY(y));
   }
+}
+
+TEST_CASE("READIN copies small+trivially copyable types"){
+    int x = 0;
+    int& y = x;
+    UMBRA_READIN(y){ //breaks the link
+        x=1;
+        REQUIRE(y!=x);
+    }
 }
