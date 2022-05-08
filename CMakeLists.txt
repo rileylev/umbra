@@ -8,13 +8,9 @@ project(
 
 include(early_hook.cmake)
 
-find_package(Boost REQUIRED)
-
 add_library(umbra INTERFACE)
 add_library(umbra::umbra ALIAS umbra)
 target_include_directories(umbra INTERFACE include)
-
-target_link_libraries(umbra INTERFACE Boost::boost)
 
 target_compile_features(umbra INTERFACE cxx_std_20)
 
