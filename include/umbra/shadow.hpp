@@ -81,7 +81,7 @@
 #define UMBRA_POISON(...) UMBRA_FOR_VARARGS_(UMBRA_POISON1_, __VA_ARGS__)
 
 #define UMBRA_REBIND_(tmp, type, name, expr)                              \
-  UMBRA_LET1(type tmp = expr)                                             \
+  UMBRA_LET1(type tmp{expr})                                              \
     UMBRA_SHADOW(auto& name = tmp)
 // I'm not sure what ^^^ should be. For now, just reference a tmp variable
 // which has the desired declaration
