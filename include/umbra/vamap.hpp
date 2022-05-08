@@ -104,6 +104,6 @@
 #define UMBRA_VAMAP_98_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_99_(f, __VA_ARGS__))
 #define UMBRA_VAMAP_99_(f, x, ...)  f(x) __VA_OPT__(UMBRA_VAMAP_100_(f, __VA_ARGS__))
 #define UMBRA_VAMAP_100_(f, x, ...) f(x) __VA_OPT__(UMBRA_VAMAP_101_(f, __VA_ARGS__))
-#define UMBRA_VAMAP_101_(f, x, ...) static_assert(false, "too many args")
+#define UMBRA_VAMAP_101_(f, x, ...) static_assert(false, "Too many args for UMBRA");
 
 #endif
