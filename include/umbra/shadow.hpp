@@ -90,7 +90,7 @@
  * initialized from `expr`
  */
 #define UMBRA_REBIND(type, name, expr)                                    \
-  UMBRA_REBIND_(UMBRA_GENSYM_(tmp), type, name, expr)
+  UMBRA_REBIND_(UMBRA_GENSYM_(rebind_tmp), type, name, expr)
 
 #define UMBRA_FREEZE1_(name) UMBRA_REBIND(auto const&, name, name)
 /**
@@ -117,7 +117,7 @@ using ReadIn_ = std::conditional_t<
 template<class T>
 // TODO: does decay do too much?
 using ReadIn = ReadIn_<std::decay_t<T>>;
-} // namespace umbra
+}
 #ifndef UMBRA_READIN_TEMPLATE
 /**
  * Customization point! A template that decides if we pass by
