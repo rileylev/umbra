@@ -7,8 +7,6 @@
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/variadic/to_seq.hpp>
 
-#define UMBRA_COMMENT(...)
-
 #define UMBRA_CALL_(_, mac, elem) mac(elem)
 
 #define UMBRA_FOR_VARARGS_(mac, ...)                                      \
