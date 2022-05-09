@@ -23,10 +23,18 @@
 #  define UMBRA_PRAGMA_IGNORE_SHADOW_
 #endif
 
+/**
+ * Disable shadow warnings for its argument:
+ *
+ * UMBRA_IGNORE_SHADOW(int x = 3;)
+ */
 #define UMBRA_IGNORE_SHADOW(...)                                          \
   HEDLEY_DIAGNOSTIC_PUSH UMBRA_PRAGMA_IGNORE_SHADOW_ __VA_ARGS__          \
       HEDLEY_DIAGNOSTIC_POP
 
+/**
+ * Create a unique name (to prevent name collisions in macro expansions)
+ * */
 #define UMBRA_GENSYM_(sym) HEDLEY_CONCAT3(umbra_gensym, __COUNTER__, sym)
 
 /**

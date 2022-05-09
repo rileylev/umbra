@@ -1,56 +1,60 @@
-#+TITLE: Readme
-Macro utilities for shadowing with lexical scope
+#+TITLE: Umbra: macros for shadowing
 
-Accidental shadowing can cause trouble, especially because of how it interacts with other C++ features. But intentional shadowing is useful; it can block or modify access to variables. I often want to express a variable "becomes" const---nothing beyond this point is allowed to modify it. For example, you can use shadowing to assert a loop's index variable is never modified in its body:
+Deliberately shadowing variables can be useful. For example, shadowing can remove a variable from an inner scope, perhaps to enforce a loop invariant or prevent use-after-move errors.
 
+For example, the following loops uses ~UMBRA_FREEZE~ to enforce the invariant that ~i~ counts the number of completed iterations by shadowing the mutable ~i~ with a ~const &~.
 #+BEGIN_SRC cpp
     for(int i = 0; i < len, ++i)
       UMBRA_FREEZE(i) {
+        // i is now const
         if(pred(i))
           arr[i]++;
+        ...
       }
 #+END_SRC
-
-
-
-This library provides 4 macros:
-
- - ~UMBRA_SHADOW~ which disables shadowing warnings for one definition and introduces a scope:
-
+* Why use a library for shadowing?
+Because accidental shadowing interacts poorly with quirks of C++, strict shadow warnings can prevent lots of problems, including surprising data races like this:
 #+BEGIN_SRC cpp
-    int const x = 3;
-    UMBRA_SHADOW(int x = 2){
-      ++x;              // ok!
-    }
+std::mutex mut;
+void critical_section(){
+    std::unique_lock(mut);
+    // this defines a default-constructed lock shadowing mut
+    // the author intended to lock it
+    ...
+}
 #+END_SRC
+[[https://youtu.be/lkgszkPnV8g][From curiously recurring C++ Bugs at facebook by Louis Brandy]]
 
- - ~UMBRA_POISON~, which bans variables from use in the new scope:
+So when you intentionally shadow, you need to turn off shadow warnings for that line alone. Umbra provides this with ~UMBRA_IGNORE_SHADOW(...)~, which wraps its argument with the ~#pragma~ s to turn shadow warnings off and then back on.
 
+Umbra wraps up some common shadowing patterns into macros, which state your intent and handle the tricky bits.
+
+Compare the wrong but tempting implementation of ~UMBRA_FREEZE~ by hand
 #+BEGIN_SRC cpp
-    int x = 3;
-    int y = 2;
-    UMBRA_POISON(x,y){
-      auto z = x + y; // warning/error!
-    }
+for(int i = 0; i < len, ++i) {
+  {
+    auto const& i = i; // ERROR: variable with deduced type cannot appear
+                       // in its own initializer
+    if(pred(i)) arr[i]++;
+  }
+}
 #+END_SRC
-
- - ~UMBRA_FREEZE~, which makes variables const within the new scope:
-
+ The correct "two-step" version
 #+BEGIN_SRC cpp
-    int x = 2;
-    int y = 3;
-    UMBRA_FREEZE(x,y){
-      ++x, ++y;   // error
-    }
+for(int i = 0; i < len, ++i) {
+  {
+    auto const& i_ = i;
+    auto const& i  = i_; // ERROR: variable with deduced type cannot appear
+                         // in its own initializer
+    if(pred(i)) arr[i]++;
+  }
+}
 #+END_SRC
-
- - and ~UMBRA_READIN~, which will rebind a variable to a copy if the type is easy to copy:
-
+And using umbra:
 #+BEGIN_SRC cpp
-    template<class T>
-    auto example(T const& x){
-      UMBRA_READIN(x){    // we want a read only variable
-                          // but not necessarily a reference
-      }
-    }
+for(int i = 0; i < len, ++i) {
+  UMBRA_FREEZE(i) {
+    if(pred(i)) arr[i]++;
+  }
+}
 #+END_SRC
