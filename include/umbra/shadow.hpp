@@ -34,7 +34,7 @@
 
 /**
  * Create a unique name (to prevent name collisions in macro expansions)
- * */
+ **/
 #define UMBRA_GENSYM_(sym) HEDLEY_CONCAT3(umbra_gensym, __COUNTER__, sym)
 
 /**

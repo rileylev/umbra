@@ -44,8 +44,7 @@ for(int i = 0; i < len, ++i) {
 for(int i = 0; i < len, ++i) {
   {
     auto const& i_ = i;
-    auto const& i  = i_; // ERROR: variable with deduced type cannot appear
-                         // in its own initializer
+    auto const& i  = i_; // Okay!
     if(pred(i)) arr[i]++;
   }
 }
