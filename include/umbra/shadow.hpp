@@ -45,7 +45,7 @@
  * }
  */
 #define UMBRA_LET1(...) if(__VA_ARGS__; true)
-//  TODO: for interferes with break, if interfores with else
+//  TODO: for interferes with break, if interferes with else
 
 /**
  * Disable warnings for shadowing for one variable definition introduced in
@@ -100,30 +100,27 @@
  */
 #define UMBRA_FREEZE(...) UMBRA_VAMAP_(UMBRA_FREEZE1_, __VA_ARGS__)
 
-#include <type_traits>
-namespace umbra {
-/**
- * Our fallback implementation for ReadIn
- */
-template<class T>
-using ReadIn_ = std::conditional_t<
-    std::is_trivially_copyable_v<T> && sizeof(T) <= 2 * sizeof(void*),
-    T const,
-    T const&>;
-
-template<class T>
-// TODO: does decay do too much?
-using ReadIn = ReadIn_<std::decay_t<T>>;
-}
 #ifndef UMBRA_READIN_TEMPLATE
 /**
  * Customization point! A template that decides if we pass by
  * const & or by value
  */
 #  define UMBRA_READIN_TEMPLATE ::umbra::ReadIn
+
+#  include <type_traits>
+namespace umbra {
+/**
+ * Our fallback implementation for ReadIn
+ */
+template<class T>
+using ReadIn = std::conditional_t<
+    std::is_trivially_copyable_v<T> && sizeof(T) <= 2 * sizeof(void*),
+    T const,
+    T const&>;
+}
 #endif
 #define UMBRA_READIN1_(name)                                              \
-  UMBRA_REBIND(UMBRA_READIN_TEMPLATE<decltype(name)>, name, name)
+  UMBRA_REBIND(UMBRA_READIN_TEMPLATE<std::decay_t<decltype(name)>>, name, name)
 /**
  * Rebind `name` to a ReadIn within the new scope
  *

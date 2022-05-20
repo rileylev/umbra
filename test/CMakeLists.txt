@@ -7,6 +7,16 @@ project(umbra_test)
 
 include(early_hook.cmake)
 
+add_executable(tester test.cpp)
+find_package(Catch2 REQUIRED)
+
+set(CMAKE_BUILD_TYPE Debug)
+
+target_link_libraries(tester PRIVATE umbra::umbra Catch2::Catch2)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(tester)
 
 # How to test that compilation fails:
 # https://cmake.org/pipermail/cmake/2017-September/066219.html
@@ -26,18 +36,6 @@ endfunction()
 test_that_compile_errors(shadow_warning_on
   "Ensure that shadow warnings are enabled"
   shadow_warning_on.cpp "(shadows|hides)")
-
-add_executable(tester test.cpp)
-find_package(Catch2 REQUIRED)
-
-set(CMAKE_BUILD_TYPE Debug)
-
-target_link_libraries(tester PRIVATE umbra::umbra Catch2::Catch2)
-
-include(CTest)
-include(Catch)
-catch_discover_tests(tester)
-
 
 test_that_compile_errors(poison
   "Accessing a poisoned variable causes a warning"
