@@ -77,8 +77,8 @@
  */
 #define UMBRA_POISON(...) UMBRA_VAMAP_(UMBRA_POISON1_, __VA_ARGS__)
 
-#define UMBRA_REBIND_(tmp, type, name, expr)                              \
-  UMBRA_LET1(type tmp{expr})                                              \
+#define UMBRA_REBIND_(tmp, type, name, ...)                               \
+  UMBRA_LET1(type tmp{__VA_ARGS__})                                       \
     UMBRA_SHADOW(auto& name = tmp)
 // I'm not sure what ^^^ should be. For now, just reference a tmp variable
 // which has the desired declaration
@@ -86,8 +86,8 @@
  * Rebind `name` as a reference to a variable defined with type `type`
  * initialized from `expr`
  */
-#define UMBRA_REBIND(type, name, expr)                                    \
-  UMBRA_REBIND_(UMBRA_GENSYM_(rebind_tmp), type, name, expr)
+#define UMBRA_REBIND(type, name, ...)                                     \
+  UMBRA_REBIND_(UMBRA_GENSYM_(rebind_tmp), type, name, __VA_ARGS__)
 
 #define UMBRA_FREEZE1_(name) UMBRA_REBIND(auto const&, name, name)
 /**
@@ -120,7 +120,9 @@ using ReadIn = std::conditional_t<
 }
 #endif
 #define UMBRA_READIN1_(name)                                              \
-  UMBRA_REBIND(UMBRA_READIN_TEMPLATE<std::decay_t<decltype(name)>>, name, name)
+  UMBRA_REBIND(UMBRA_READIN_TEMPLATE<std::decay_t<decltype(name)>>,       \
+               name,                                                      \
+               name)
 /**
  * Rebind `name` to a ReadIn within the new scope
  *
