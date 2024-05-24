@@ -24,6 +24,7 @@ for(int i = 0; i < len, ++i)
 #+END_SRC
 
 Accidentally shadowing can be devastating, especially with RAII types:
+[[https://youtu.be/lkgszkPnV8g][From curiously recurring C++ Bugs at facebook by Louis Brandy]]
 #+BEGIN_SRC cpp
 std::mutex mut;
 void critical_section(){
@@ -33,7 +34,27 @@ void critical_section(){
   ...
 }
 #+END_SRC
-[[https://youtu.be/lkgszkPnV8g][From curiously recurring C++ Bugs at facebook by Louis Brandy]]
+Here the programmer meant to lock the mutex, but actually created a default-constructed lock named ~mut~. Bugs like this are hard for humans to catch, but easy for machines: ~Wshadow~ would catch it.
+
+So turn on ~-Wshadow~ and ~-Werror~. When you truly do want to shadow one variable, turn off shadow warnings locally. Enter ~UMBRA_IGNORE_SHADOW~:
+#+BEGIN_SRC cpp
+int x = 1;
+{
+  std::string x; // ERROR!
+  UMBRA_IGNORE_SHADOW(
+    char x = '\0'; // OK!
+  )
+}
+#+END_SRC
+or ~UMBRA_SHADWO~ for a little more syntactic sugar:
+#+BEGIN_SRC cpp
+int x = 1;
+{
+  UMBRA_SHADOW(char x = '\0'){ // Ok!
+    ...
+  }
+}
+#+END_SRC
 
 * Why use a library for shadowing?
 Because accidental shadowing interacts poorly with quirks of C++, strict shadow warnings can prevent lots of problems, including surprising data races like this:
