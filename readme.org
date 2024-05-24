@@ -37,7 +37,7 @@ void critical_section(){
   ...
 }
 #+END_SRC
-Here the programmer meant to lock the mutex, but actually created a default-constructed lock named ~mut~. Bugs like this are hard for humans to catch, but easy for machines: ~Wshadow~ would catch it.
+A terrifying bug. The programmer meant to lock the mutex, but actually created a default-constructed lock named ~mut~. Bugs like this are hard for humans to catch, but easy for machines: ~Wshadow~ would catch it.
 
 So turn on ~-Wshadow~ and ~-Werror~. When you truly do want to shadow one variable, turn off shadow warnings locally. Enter ~UMBRA_IGNORE_SHADOW~:
 #+BEGIN_SRC cpp
