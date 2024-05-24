@@ -69,7 +69,7 @@ UMBRA_POISON(dont_access_me) {
 Shadowing, specifically rebinding, serves as a restricted form of assignment. And it's purely functional. For example, you often need to perform one or two operations to fixup an input that would otherwise be const.
 #+BEGIN_SRC cpp
 auto purely_functional_thing(int input){
-  auto const input = fixup(input))
+  auto const input = fixup(input));
   // this doesn't actually work because the
   // scoping rules are wonky
 }
@@ -79,7 +79,7 @@ Because C++ has wonky scoping rules, you need a temporary
 auto purely_functional_thing(int input){
   auto const tmp = input;
   {
-    auto const input = fixup(input))
+    auto const input = fixup(input));
   }
 }
 #+END_SRC
