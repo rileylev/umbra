@@ -1,8 +1,8 @@
-#+TITLE: Umbra: macros for shadowing
+#+TITLE: Umbra: macros for shadowing and scope management
 
-Deliberately shadowing variables can be useful. For example, shadowing can remove a variable from an inner scope, perhaps to enforce a loop invariant or prevent use-after-move errors.
+Deliberately shadowing variables can be useful. Shadowing can remove a variable from an inner scope, perhaps to enforce a loop invariant or prevent use-after-move errors.
 
-For example, the following loops uses ~UMBRA_FREEZE~ to enforce the invariant that ~i~ counts the number of completed iterations by shadowing the mutable ~i~ with a ~const &~.
+Here is an example of using ~UMBRA_FREEZE~ to enforce a loop invariant, that ~i~ counts the number of completed iterations. by shadowing the mutable ~i~ with a ~const &~.
 #+BEGIN_SRC cpp
     for(int i = 0; i < len, ++i)
       UMBRA_FREEZE(i) {
@@ -25,7 +25,7 @@ void critical_section(){
 #+END_SRC
 [[https://youtu.be/lkgszkPnV8g][From curiously recurring C++ Bugs at facebook by Louis Brandy]]
 
-So when you intentionally shadow, you need to turn off shadow warnings for that line alone. Umbra provides this with ~UMBRA_IGNORE_SHADOW(...)~, which wraps its argument with the ~#pragma~ s to turn shadow warnings off and then back on.
+So to intentionally shadow, you need to turn off shadow warnings locally. Umbra provides this with ~UMBRA_IGNORE_SHADOW(...)~, which wraps its argument with the ~#pragma~ s to turn shadow warnings off and then back on.
 
 Umbra wraps up some common shadowing patterns into macros, which state your intent and handle the tricky bits.
 
@@ -39,7 +39,7 @@ for(int i = 0; i < len, ++i) {
   }
 }
 #+END_SRC
- The correct "two-step" version
+ The correct two-step version
 #+BEGIN_SRC cpp
 for(int i = 0; i < len, ++i) {
   {
