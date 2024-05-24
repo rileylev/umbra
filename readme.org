@@ -8,8 +8,9 @@ for(int i = 0; i < len, ++i) {
     int i =0;
     // Now we can't change the loop index
     if(pred(j))
-      arr[j]++; //error!
+      arr[j]++; //ok
     ...
+    j++; //ERROR
   }
 }
 #+END_SRC
@@ -18,7 +19,9 @@ or, using Umbra,
 for(int i = 0; i < len, ++i)
   UMBRA_FREEZE(i) {
     if(pred(i))
-      arr[i]++; //error!
+      arr[i]++; //ok
+    ...
+    i++; // ERROR
     ...
   }
 #+END_SRC
