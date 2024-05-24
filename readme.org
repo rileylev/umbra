@@ -56,48 +56,9 @@ int x = 1;
 }
 #+END_SRC
 
-* Why use a library for shadowing?
-Because accidental shadowing interacts poorly with quirks of C++, strict shadow warnings can prevent lots of problems, including surprising data races like this:
+Ban uses of an identifier within a scope using ~UMBRA_POISON~:
 #+BEGIN_SRC cpp
-std::mutex mut;
-void critical_section(){
-    std::unique_lock(mut);
-    // this defines a default-constructed lock shadowing mut
-    // the author intended to lock it
-    ...
-}
-#+END_SRC
-[[https://youtu.be/lkgszkPnV8g][From curiously recurring C++ Bugs at facebook by Louis Brandy]]
-
-So to intentionally shadow, you need to turn off shadow warnings locally. Umbra provides this with ~UMBRA_IGNORE_SHADOW(...)~, which wraps its argument with the ~#pragma~ s to turn shadow warnings off and then back on.
-
-Umbra wraps up some common shadowing patterns into macros, which state your intent and handle the tricky bits.
-
-Compare the wrong but tempting implementation of ~UMBRA_FREEZE~ by hand
-#+BEGIN_SRC cpp
-for(int i = 0; i < len, ++i) {
-  {
-    auto const& i = i; // ERROR: variable with deduced type cannot appear
-                       // in its own initializer
-    if(pred(i)) arr[i]++;
-  }
-}
-#+END_SRC
- The correct two-step version
-#+BEGIN_SRC cpp
-for(int i = 0; i < len, ++i) {
-  {
-    auto const& i_ = i;
-    auto const& i  = i_; // Okay!
-    if(pred(i)) arr[i]++;
-  }
-}
-#+END_SRC
-And using umbra:
-#+BEGIN_SRC cpp
-for(int i = 0; i < len, ++i) {
-  UMBRA_FREEZE(i) {
-    if(pred(i)) arr[i]++;
-  }
+UMBRA_POISON(dont_access_me) {
+  auto x = dont_access_me; // deprecated: "poisoned by UMBRA_POISON":
 }
 #+END_SRC
