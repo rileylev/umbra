@@ -46,7 +46,7 @@ int x = 1;
   )
 }
 #+END_SRC
-or ~UMBRA_SHADWO~ for a little more syntactic sugar:
+or ~UMBRA_SHADOW~ for a little more syntactic sugar:
 #+BEGIN_SRC cpp
 int x = 1;
 {
@@ -60,5 +60,31 @@ Ban uses of an identifier within a scope using ~UMBRA_POISON~:
 #+BEGIN_SRC cpp
 UMBRA_POISON(dont_access_me) {
   auto x = dont_access_me; // deprecated: "poisoned by UMBRA_POISON":
+}
+#+END_SRC
+
+Shadowing, specifically rebinding, serves as a restricted form of assignment. And it's purely functional. For example, you often need to perform one or two operations to fixup an input that would otherwise be const.
+#+BEGIN_SRC cpp
+auto purely_functional_thing(int input){
+  auto const input = fixup(input))
+  // this doesn't actually work because the
+  // scoping rules are wonky
+}
+#+END_SRC
+Because C++ has wonky scoping rules, you need a temporary
+#+BEGIN_SRC cpp
+auto purely_functional_thing(int input){
+  auto const tmp = input;
+  {
+    auto const input = fixup(input))
+  }
+}
+#+END_SRC
+which is encapsulated in ~UMBRA_REBIND~
+#+BEGIN_SRC cpp
+auto purely_functional_thing(int input){
+  UMBRA_REBIND(auto const, input, fixup(input)) {
+    ...
+  }
 }
 #+END_SRC
